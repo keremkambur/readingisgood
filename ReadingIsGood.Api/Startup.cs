@@ -6,13 +6,9 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Mvc.Versioning;
 using ReadingIsGood.Api.Controllers;
 using ReadingIsGood.Api.Extensions;
 using ReadingIsGood.Api.Middleware;
@@ -110,8 +106,6 @@ namespace ReadingIsGood.Api
             });
 
             app.UseAuthentication();
-            //Startup.RegisterCustomAuthMiddleware(app);
-            app.UseHttpsRedirection();
 
             app.UseRouting();
 
@@ -121,7 +115,7 @@ namespace ReadingIsGood.Api
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            app.UseMiddleware<ApiExceptionHandlerMiddleware>();
+            //app.UseMiddleware<ApiExceptionHandlerMiddleware>();
         }
 
         private static void RegisterCustomAuthMiddleware(IApplicationBuilder app)

@@ -32,15 +32,15 @@ namespace ReadingIsGood.Api.Controllers
         {
             var response = new PostResponse(this.HttpContext.TraceIdentifier);
 
-            try
-            {
+            //try
+            //{
                 request.ValidateAndThrow();
                 await _authenticationService.RegisterCustomer(request, cancellationToken).ConfigureAwait(false);
-            }
-            catch (Exception ex)
-            {
-                response.SetError(ex);
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    response.SetError(ex);
+            //}
 
             return response;
         }
@@ -52,19 +52,19 @@ namespace ReadingIsGood.Api.Controllers
         {
             var response = new SingleResponse<AuthenticationResponse>(this.HttpContext.TraceIdentifier);
 
-            try
-            {
+            //try
+            //{
                 request.ValidateAndThrow();
 
                 response.Model = await _authenticationService.AuthenticateCustomer(request, cancellationToken)
                         .ConfigureAwait(false)
                     ;
-            }
-            catch (Exception ex)
-            {
-                response.SetError(ex);
-                response.Model = null;
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    response.SetError(ex);
+            //    response.Model = null;
+            //}
 
             return response;
         }

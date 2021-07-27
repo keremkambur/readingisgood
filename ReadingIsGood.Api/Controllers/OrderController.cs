@@ -34,5 +34,14 @@ namespace ReadingIsGood.Api.Controllers
         {
             
         }
+
+
+        [HttpGet("free")]
+        [AllowAnonymous]
+        public void GetFreeList()
+        {
+
+        }
+
     }
 }
