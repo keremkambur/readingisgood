@@ -12,7 +12,8 @@ namespace ReadingIsGood.DataLayer.Mappings.Base
                 new UserMap(),
                 new OrderMap(),
                 new ProductMap(),
-                new RefreshTokenMap()
+                new RefreshTokenMap(),
+                new OrderDetailMap()
             };
         }
 

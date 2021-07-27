@@ -1,19 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using ReadingIsGood.DataLayer.Mappings.Base;
 using ReadingIsGood.EntityLayer.Database.Content;
+using ReadingIsGood.EntityLayer.Enum;
+using ReadingIsGood.Utils.Extensions;
 
 namespace ReadingIsGood.DataLayer.Mappings
 {
-    public class ProductMap : EntityMap<Product>
+    public class OrderDetailMap : EntityMap<OrderDetail>
     {
-        public ProductMap(string schema = "") : base(schema)
+        public OrderDetailMap(string schema = "") : base(schema)
         {
         }
 
         public override void Map(ModelBuilder modelBuilder)
         {
             // get entity builder reference
-            var entity = modelBuilder.Entity<Product>();
+            var entity = modelBuilder.Entity<OrderDetail>();
 
             // set table name and schema
             MapTableAndSchema(entity);
@@ -22,8 +24,11 @@ namespace ReadingIsGood.DataLayer.Mappings
             EntityMapComponents.ForEach(c => c.Map(entity));
 
             // identifier
-            entity.HasKey(p => p.ProductId);
-            entity.Property(p => p.ProductId).UseIdentityColumn();
+            entity.HasKey(p => p.OrderDetailId);
+            entity.Property(p => p.OrderDetailId).UseIdentityColumn();
+
+            entity.HasOne(r => r.Order).WithMany(x => x.OrderDetails);
+            entity.HasOne(x => x.Product).WithMany(x => x.OrderDetails);
         }
     }
 }

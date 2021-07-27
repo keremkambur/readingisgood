@@ -17,9 +17,10 @@ namespace ReadingIsGood.EntityLayer.Database.Content
         public OrderStatus OrderStatus { get; set; }
 
         public int UserId { get; set; }
+
         public User User { get; set; }
 
-        public ICollection<Product> Products { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; }
 
         #region IAuditEntity
 

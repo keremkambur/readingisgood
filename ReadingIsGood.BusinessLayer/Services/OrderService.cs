@@ -26,37 +26,56 @@ namespace ReadingIsGood.BusinessLayer.Services
             _authRepository = authRepository;
         }
 
-        public Task<IList<OrderListItemResponse>> GetOrderList(string userUuid, CancellationToken cancellationToken)
+        public IList<OrderListItemResponse> GetOrderList(Guid userUuid, CancellationToken cancellationToken)
         {
-            return _databaseRepository.OrderCrudOperations.QueryDbSet().Include(i => i.Products)
-                .Where(x => x.User.Uuid.ToString() == userUuid)
+            return _databaseRepository.OrderCrudOperations.QueryDbSet().Include(i => i.OrderDetails)
+                .Where(x => x.User.Uuid == userUuid)
                 .Select(x => new OrderListItemResponse
                 {
                     Address = x.Address,
                     OrderDate = x.OrderDate,
-                    Products = x.Products.Select(p => new ProductResponse {Name = p.Name, Quantity = x.Products.})
-                });
+                    Products = x.OrderDetails.Select(x => new ProductResponse
+                    {
+                        Name = x.Product.Name,
+                        Quantity = x.Quantity
+                    }).ToList()
+                }).ToList();
         }
 
-        public Task<OrderDetailResponse> GetOrderDetail(string userUuid, string orderUuid, CancellationToken cancellationToken)
+        public Task<OrderDetailResponse> GetOrderDetail(Guid userUuid, string orderUuid, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public Task<PostResponse> Order(OrderRequest request, CancellationToken cancellationToken)
+        public Task Order(Guid userUuid, OrderRequest request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+            var productsInOrder = _databaseRepository.ProductCrudOperations.QueryList(x =>
+                request.ProductQuantities.Select(x => x.ProductUuid).Contains(x.Uuid));
 
-        public Task<PostResponse> Order(string userUuid, OrderRequest request, CancellationToken cancellationToken)
-        {
-            _databaseRepository.OrderCrudOperations.Create(new Order
+
+            var createdOrder = _databaseRepository.OrderCrudOperations.Create(new Order
             {
-                User = _authRepository.UserCrudOperations.QuerySingle(x => x.Uuid == Guid.Parse(userUuid)),
+                User = _authRepository.UserCrudOperations.QuerySingle(x => x.Uuid == userUuid),
                 OrderDate = DateTime.Now,
-                Products = request.
+                Address = request.Address
+            });
 
-            })
+            createdOrder.OrderDetails = productsInOrder.Select(p =>
+            {
+                var quantity = request
+                                .ProductQuantities
+                                .Where(x => x.ProductUuid == p.Uuid)
+                                .Sum(x => x.Quantity);
+
+                return new OrderDetail
+                {
+                    Product = p,
+                    Quantity = quantity,
+                    Price = p.UnitPrice * quantity
+                };
+            }).ToList();
+
+            return Task.CompletedTask;
         }
     }
 }

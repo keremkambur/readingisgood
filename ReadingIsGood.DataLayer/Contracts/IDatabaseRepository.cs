@@ -13,6 +13,7 @@ namespace ReadingIsGood.DataLayer.Contracts
     {
         ICrudOperations<Product> ProductCrudOperations { get; }
         ICrudOperations<Order> OrderCrudOperations { get; }
+        ICrudOperations<OrderDetail> OrderDetailCrudOperations { get; }
 
         bool BulkMode { get; }
 

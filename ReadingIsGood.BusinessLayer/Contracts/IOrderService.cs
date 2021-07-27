@@ -12,10 +12,10 @@ namespace ReadingIsGood.BusinessLayer.Contracts
 {
     public interface IOrderService
     {
-        Task<IList<OrderListItemResponse>> GetOrderList(string userUuid, CancellationToken cancellationToken);
+        IList<OrderListItemResponse> GetOrderList(Guid userUuid, CancellationToken cancellationToken);
 
-        Task<OrderDetailResponse> GetOrderDetail(string userUuid, string orderUuid, CancellationToken cancellationToken);
+        Task<OrderDetailResponse> GetOrderDetail(Guid userUuid, string orderUuid, CancellationToken cancellationToken);
 
-        Task<PostResponse> Order(OrderRequest request, CancellationToken cancellationToken);
+        Task Order(Guid userUuid, OrderRequest request, CancellationToken cancellationToken);
     }
 }

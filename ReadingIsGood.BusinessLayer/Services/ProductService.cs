@@ -22,8 +22,8 @@ namespace ReadingIsGood.BusinessLayer.Services
 
         public IList<ProductResponse> GetAvailableProductList()
         {
-            return this._databaseRepository.ProductCrudOperations.QueryList(x => x.StockCount > 0)
-                .Select(x => new ProductResponse {Name = x.Name, Quantity = x.StockCount}).ToList();
+            return this._databaseRepository.ProductCrudOperations.QueryList(x => x.AmountLeft > 0)
+                .Select(x => new ProductResponse {Name = x.Name, Quantity = x.AmountLeft}).ToList();
         }
         
         public Task CreateProductOrIncreaseStock()
@@ -40,7 +40,7 @@ namespace ReadingIsGood.BusinessLayer.Services
                 if (existingProduct != null)
                 {
                     this._databaseRepository.ProductCrudOperations.Update(existingProduct.Uuid,
-                        product => product.StockCount = product.StockCount + rndNum);
+                        product => product.AmountLeft = product.AmountLeft + rndNum);
                 }
                 else
                 {

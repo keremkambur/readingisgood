@@ -38,8 +38,6 @@ namespace ReadingIsGood.DataLayer.Mappings
                     v => v.ToString(),
                     v => v.ConvertToEnum(OrderStatus.Unknown, true)
                 );
-
-            entity.HasMany(r => r.Products).WithMany(x => x.Orders);
         }
     }
 }

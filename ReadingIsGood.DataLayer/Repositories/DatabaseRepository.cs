@@ -31,6 +31,7 @@ namespace ReadingIsGood.DataLayer.Repositories
 
         public ICrudOperations<Product> ProductCrudOperations { get; set; }
 
+        public ICrudOperations<OrderDetail> OrderDetailCrudOperations { get; set; }
         public void EnableBulkMode()
         {
             BulkMode = true;

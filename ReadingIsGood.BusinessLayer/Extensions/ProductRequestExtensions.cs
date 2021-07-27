@@ -15,7 +15,7 @@ namespace ReadingIsGood.BusinessLayer.Extensions
             => new Product
             {
                 Name = request.Name,
-                StockCount = request.Quantity,
+                AmountLeft = request.Quantity,
                 Uuid = Guid.NewGuid()
             };
     }

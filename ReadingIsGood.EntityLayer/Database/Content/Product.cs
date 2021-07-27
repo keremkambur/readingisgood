@@ -10,9 +10,9 @@ namespace ReadingIsGood.EntityLayer.Database.Content
 
         public string Name { get; set; }
 
-        public int StockCount { get; set; }
+        public int AmountLeft { get; set; }
 
-        public ICollection<Order> Orders { get; set; }
+        public decimal UnitPrice { get; set; }
 
         #region IAuditEntity
 
@@ -20,7 +20,8 @@ namespace ReadingIsGood.EntityLayer.Database.Content
         public Guid Uuid { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }
-        
+
+        public ICollection<OrderDetail> OrderDetails { get; set; }
 
         #endregion
     }

@@ -29,14 +29,13 @@ namespace ReadingIsGood.Api.Controllers
 
         [HttpGet]
         [Authorize]
-        public async Task<ListResponse<OrderListItemResponse>> GetList(CancellationToken cancellationToken)
+        public Task<ListResponse<OrderListItemResponse>> GetList(CancellationToken cancellationToken)
         {
-            var userUuid = HttpContext.User.FindFirst(ClaimsIdentityHelper.ClaimsTypes.ClientId)?.Value;
             var response = new ListResponse<OrderListItemResponse>(this.HttpContext.TraceIdentifier);
             
             try
             {
-                response.Model = await this._orderService.GetOrderList(userUuid, cancellationToken);
+                response.Model = this._orderService.GetOrderList(HttpContext.User.GetUserId(), cancellationToken);
             }
             catch (Exception e)
             {
@@ -44,19 +43,18 @@ namespace ReadingIsGood.Api.Controllers
                 response.Model = null;
             }
 
-            return response;
+            return Task.FromResult(response);
         }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<SingleResponse<OrderDetailResponse>> GetSpecific(string orderUuid, CancellationToken cancellationToken)
         {
-            var userUuid = HttpContext.User.FindFirst(ClaimsIdentityHelper.ClaimsTypes.ClientId)?.Value;
             var response = new SingleResponse<OrderDetailResponse>(this.HttpContext.TraceIdentifier);
 
             try
             {
-                response.Model = await this._orderService.GetOrderDetail(userUuid, orderUuid, cancellationToken);
+                response.Model = await this._orderService.GetOrderDetail(HttpContext.User.GetUserId(), orderUuid, cancellationToken);
             }
             catch (Exception e)
             {
@@ -77,7 +75,7 @@ namespace ReadingIsGood.Api.Controllers
             {
                 request.ValidateAndThrow();
 
-                await _orderService.Order(request, cancellationToken)
+                await _orderService.Order(HttpContext.User.GetUserId(), request, cancellationToken)
                         .ConfigureAwait(false)
                     ;
             }
