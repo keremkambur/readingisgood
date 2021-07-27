@@ -1,5 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 using ReadingIsGood.BusinessLayer.RequestModels.Base;
+using ReadingIsGood.BusinessLayer.Exceptions;
 
 namespace ReadingIsGood.BusinessLayer.RequestModels.Auth
 {
@@ -19,6 +20,10 @@ namespace ReadingIsGood.BusinessLayer.RequestModels.Auth
 
         public override void ValidateAndThrow()
         {
+            if (string.IsNullOrWhiteSpace(FirstName))
+            {
+                throw new RequestParameterException(FirstName);
+            }
 
         }
     }

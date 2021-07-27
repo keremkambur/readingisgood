@@ -1,5 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using System;
+using System.Text.Json.Serialization;
 using ReadingIsGood.BusinessLayer.RequestModels.Base;
+using ReadingIsGood.BusinessLayer.Exceptions;
 
 namespace ReadingIsGood.BusinessLayer.RequestModels.Auth
 {
@@ -13,7 +15,15 @@ namespace ReadingIsGood.BusinessLayer.RequestModels.Auth
 
         public override void ValidateAndThrow()
         {
-            //TODO add validation!
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                throw new RequestParameterException("email");
+            }
+
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                throw new RequestParameterException("password");
+            }
         }
     }
 }

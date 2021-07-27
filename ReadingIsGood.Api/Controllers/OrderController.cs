@@ -16,7 +16,7 @@ using ReadingIsGood.Utils.Identity;
 namespace ReadingIsGood.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class OrderController : ControllerBase
     {
         private readonly ILogger<OrderController> _logger;

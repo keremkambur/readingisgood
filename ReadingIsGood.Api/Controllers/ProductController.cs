@@ -15,7 +15,7 @@ using ReadingIsGood.Utils;
 namespace ReadingIsGood.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;

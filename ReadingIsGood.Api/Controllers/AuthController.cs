@@ -14,7 +14,7 @@ using ReadingIsGood.Utils;
 namespace ReadingIsGood.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {

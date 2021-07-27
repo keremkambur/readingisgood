@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.Json.Serialization;
 using ReadingIsGood.BusinessLayer.RequestModels.Base;
+using ReadingIsGood.BusinessLayer.Exceptions;
 
 namespace ReadingIsGood.BusinessLayer.RequestModels.Auth
 {
@@ -16,7 +17,7 @@ namespace ReadingIsGood.BusinessLayer.RequestModels.Auth
         {
             if (string.IsNullOrWhiteSpace(RefreshToken))
             {
-                //throw new RequestParameterException(nameof(this.RefreshToken), "Refresh token is required.");
+                throw new RequestParameterException(nameof(this.RefreshToken), "Refresh token is required.");
             }
         }
     }
