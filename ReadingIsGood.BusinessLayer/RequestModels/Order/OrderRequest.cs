@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.Json.Serialization;
 using ReadingIsGood.BusinessLayer.RequestModels.Base;
 
@@ -15,7 +16,15 @@ namespace ReadingIsGood.BusinessLayer.RequestModels.Order
 
         public override void ValidateAndThrow()
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(Address))
+            {
+                throw new ArgumentNullException($"Please provide address information");
+            }
+
+            if (ProductQuantities == null || !ProductQuantities.Any())
+            {
+                throw new ArgumentNullException($"Please provide Product information.");
+            }
         }
     }
 }

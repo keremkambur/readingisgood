@@ -18,12 +18,10 @@ namespace ReadingIsGood.Api.Controllers
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {
-        private readonly IBusinessObject _businessObject;
         private readonly IAuthenticationService _authenticationService;
 
-        public AuthController(IBusinessObject businessObject, IAuthenticationService authenticationService)
+        public AuthController(IAuthenticationService authenticationService)
         {
-            _businessObject = businessObject;
             _authenticationService = authenticationService;
         }
 

@@ -14,8 +14,8 @@ namespace ReadingIsGood.BusinessLayer.Contracts
     {
         IList<OrderListItemResponse> GetOrderList(Guid userUuid, CancellationToken cancellationToken);
 
-        Task<OrderDetailResponse> GetOrderDetail(Guid userUuid, string orderUuid, CancellationToken cancellationToken);
+        Task<OrderDetailResponse> GetOrderDetail(Guid userUuid, Guid orderUuid, CancellationToken cancellationToken);
 
-        Task Order(Guid userUuid, OrderRequest request, CancellationToken cancellationToken);
+        Task<IList<ProductQuantityData>> Order(Guid userUuid, OrderRequest request, CancellationToken cancellationToken);
     }
 }

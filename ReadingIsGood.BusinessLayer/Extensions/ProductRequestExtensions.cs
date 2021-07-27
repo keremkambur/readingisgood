@@ -16,7 +16,8 @@ namespace ReadingIsGood.BusinessLayer.Extensions
             {
                 Name = request.Name,
                 AmountLeft = request.Quantity,
-                Uuid = Guid.NewGuid()
+                Uuid = Guid.NewGuid(),
+                UnitPrice = request.Price
             };
     }
 }

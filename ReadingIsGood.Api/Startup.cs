@@ -68,7 +68,7 @@ namespace ReadingIsGood.Api
             services.AddTransient<SqlDbContext>();
             services.AddScoped<IEntityMapper, EntityMapper>();
             services.AddTransient<IBusinessObject, BusinessObject>();
-            
+
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<IProductService, ProductService>();

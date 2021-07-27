@@ -10,6 +10,7 @@ using ReadingIsGood.BusinessLayer.Extensions;
 using ReadingIsGood.BusinessLayer.RequestModels.Order;
 using ReadingIsGood.BusinessLayer.ResponseModels.Base;
 using ReadingIsGood.BusinessLayer.ResponseModels.Order;
+using ReadingIsGood.Utils;
 using ReadingIsGood.Utils.Identity;
 
 namespace ReadingIsGood.Api.Controllers
@@ -29,6 +30,9 @@ namespace ReadingIsGood.Api.Controllers
 
         [HttpGet]
         [Authorize]
+        [Consumes(Constants.MimeType.Json)]
+        [ProducesResponseType(typeof(ListResponse<OrderListItemResponse>), 200)]
+        [ProducesResponseType(typeof(ListResponse<OrderListItemResponse>), 401)]
         public Task<ListResponse<OrderListItemResponse>> GetList(CancellationToken cancellationToken)
         {
             var response = new ListResponse<OrderListItemResponse>(this.HttpContext.TraceIdentifier);
@@ -48,13 +52,16 @@ namespace ReadingIsGood.Api.Controllers
 
         [HttpGet("{id}")]
         [Authorize]
-        public async Task<SingleResponse<OrderDetailResponse>> GetSpecific(string orderUuid, CancellationToken cancellationToken)
+        [Consumes(Constants.MimeType.Json)]
+        [ProducesResponseType(typeof(SingleResponse<OrderDetailResponse>), 200)]
+        [ProducesResponseType(typeof(SingleResponse<OrderDetailResponse>), 401)]
+        public async Task<SingleResponse<OrderDetailResponse>> GetSpecific(string id, CancellationToken cancellationToken)
         {
             var response = new SingleResponse<OrderDetailResponse>(this.HttpContext.TraceIdentifier);
 
             try
             {
-                response.Model = await this._orderService.GetOrderDetail(HttpContext.User.GetUserId(), orderUuid, cancellationToken);
+                response.Model = await this._orderService.GetOrderDetail(HttpContext.User.GetUserId(), Guid.Parse(id), cancellationToken);
             }
             catch (Exception e)
             {
@@ -67,21 +74,25 @@ namespace ReadingIsGood.Api.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<PostResponse> Order(OrderRequest request, CancellationToken cancellationToken)
+        [Consumes(Constants.MimeType.Json)]
+        [ProducesResponseType(typeof(ListResponse<ProductQuantityData>), 200)]
+        [ProducesResponseType(typeof(ListResponse<ProductQuantityData>), 401)]
+        public async Task<ListResponse<ProductQuantityData>> Order(OrderRequest request, CancellationToken cancellationToken)
         {
-            var response = new PostResponse(this.HttpContext.TraceIdentifier);
+            var response = new ListResponse<ProductQuantityData>(this.HttpContext.TraceIdentifier);
 
             try
             {
                 request.ValidateAndThrow();
 
-                await _orderService.Order(HttpContext.User.GetUserId(), request, cancellationToken)
+                response.Model = await _orderService.Order(HttpContext.User.GetUserId(), request, cancellationToken)
                         .ConfigureAwait(false)
                     ;
             }
             catch (Exception ex)
             {
                 response.SetError(ex);
+                response.Model = null;
             }
 
             return response;

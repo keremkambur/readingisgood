@@ -10,7 +10,7 @@ using ReadingIsGood.DataLayer;
 namespace ReadingIsGood.DataLayer.Migrations
 {
     [DbContext(typeof(SqlDbContext))]
-    [Migration("20210727045826_Initial")]
+    [Migration("20210727132205_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,21 +20,6 @@ namespace ReadingIsGood.DataLayer.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("ProductVersion", "5.0.8")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.Property<int>("OrdersOrderId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ProductsProductId")
-                        .HasColumnType("int");
-
-                    b.HasKey("OrdersOrderId", "ProductsProductId");
-
-                    b.HasIndex("ProductsProductId");
-
-                    b.ToTable("OrderProduct");
-                });
 
             modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Auth.RefreshToken", b =>
                 {
@@ -174,9 +159,6 @@ namespace ReadingIsGood.DataLayer.Migrations
                         .HasColumnType("varchar(100)")
                         .HasDefaultValue("Created");
 
-                    b.Property<long>("Quantity")
-                        .HasColumnType("bigint");
-
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
@@ -195,9 +177,9 @@ namespace ReadingIsGood.DataLayer.Migrations
                     b.ToTable("Order", "Content");
                 });
 
-            modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Content.Product", b =>
+            modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Content.OrderDetail", b =>
                 {
-                    b.Property<int>("ProductId")
+                    b.Property<int>("OrderDetailId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:IdentityIncrement", 1)
@@ -210,11 +192,58 @@ namespace ReadingIsGood.DataLayer.Migrations
                     b.Property<DateTime?>("ModifiedAt")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("OrderId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<Guid>("Uuid")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("NEWID()");
+
+                    b.HasKey("OrderDetailId");
+
+                    b.HasIndex("OrderId");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("Uuid")
+                        .IsUnique();
+
+                    b.ToTable("OrderDetail", "Content");
+                });
+
+            modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Content.Product", b =>
+                {
+                    b.Property<int>("ProductId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:IdentityIncrement", 1)
+                        .HasAnnotation("SqlServer:IdentitySeed", 1)
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("AmountLeft")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("ModifiedAt")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("StockCount")
-                        .HasColumnType("int");
+                    b.Property<decimal>("UnitPrice")
+                        .HasColumnType("decimal(18,2)");
 
                     b.Property<Guid>("Uuid")
                         .ValueGeneratedOnAdd()
@@ -227,21 +256,6 @@ namespace ReadingIsGood.DataLayer.Migrations
                         .IsUnique();
 
                     b.ToTable("Product", "Content");
-                });
-
-            modelBuilder.Entity("OrderProduct", b =>
-                {
-                    b.HasOne("ReadingIsGood.EntityLayer.Database.Content.Order", null)
-                        .WithMany()
-                        .HasForeignKey("OrdersOrderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("ReadingIsGood.EntityLayer.Database.Content.Product", null)
-                        .WithMany()
-                        .HasForeignKey("ProductsProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Auth.RefreshToken", b =>
@@ -264,9 +278,38 @@ namespace ReadingIsGood.DataLayer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Content.OrderDetail", b =>
+                {
+                    b.HasOne("ReadingIsGood.EntityLayer.Database.Content.Order", "Order")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("ReadingIsGood.EntityLayer.Database.Content.Product", "Product")
+                        .WithMany("OrderDetails")
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+
+                    b.Navigation("Product");
+                });
+
             modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Auth.User", b =>
                 {
                     b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Content.Order", b =>
+                {
+                    b.Navigation("OrderDetails");
+                });
+
+            modelBuilder.Entity("ReadingIsGood.EntityLayer.Database.Content.Product", b =>
+                {
+                    b.Navigation("OrderDetails");
                 });
 #pragma warning restore 612, 618
         }

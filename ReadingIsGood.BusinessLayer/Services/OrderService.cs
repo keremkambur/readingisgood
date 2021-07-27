@@ -5,30 +5,26 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using ReadingIsGood.BusinessLayer.Contracts;
+using ReadingIsGood.BusinessLayer.Exceptions;
 using ReadingIsGood.BusinessLayer.RequestModels.Order;
-using ReadingIsGood.BusinessLayer.ResponseModels.Base;
 using ReadingIsGood.BusinessLayer.ResponseModels.Order;
 using ReadingIsGood.BusinessLayer.ResponseModels.Product;
-using ReadingIsGood.DataLayer.Contracts;
 using ReadingIsGood.EntityLayer.Database.Content;
 
 namespace ReadingIsGood.BusinessLayer.Services
 {
-    public class OrderService : IOrderService
+    public class OrderService : InternalService, IOrderService
     {
-        private readonly IDatabaseRepository _databaseRepository;
-        private readonly IAuthRepository _authRepository;
-
-        public OrderService(IDatabaseRepository databaseRepository, IAuthRepository authRepository)
+        public OrderService(ILogger<OrderService> logger,
+            IBusinessObject businessObject) : base(logger, businessObject)
         {
-            _databaseRepository = databaseRepository;
-            _authRepository = authRepository;
         }
 
         public IList<OrderListItemResponse> GetOrderList(Guid userUuid, CancellationToken cancellationToken)
         {
-            return _databaseRepository.OrderCrudOperations.QueryDbSet().Include(i => i.OrderDetails)
+            return BusinessObject.DatabaseRepository.OrderCrudOperations.QueryDbSet().Include(i => i.OrderDetails)
                 .Where(x => x.User.Uuid == userUuid)
                 .Select(x => new OrderListItemResponse
                 {
@@ -37,33 +33,71 @@ namespace ReadingIsGood.BusinessLayer.Services
                     Products = x.OrderDetails.Select(x => new ProductResponse
                     {
                         Name = x.Product.Name,
-                        Quantity = x.Quantity
+                        Quantity = x.Quantity,
+                        UnitPrice = x.Product.UnitPrice
                     }).ToList()
                 }).ToList();
         }
 
-        public Task<OrderDetailResponse> GetOrderDetail(Guid userUuid, string orderUuid, CancellationToken cancellationToken)
+        public Task<OrderDetailResponse> GetOrderDetail(Guid userUuid, Guid orderUuid, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            var orderWithDetails = this
+                .BusinessObject
+                .DatabaseRepository
+                .OrderCrudOperations
+                .QueryDbSet()
+                .Include(x => x.User)
+                .Include(x => x.OrderDetails)
+                .ThenInclude<Order, OrderDetail, Product>(x => x.Product)
+                .SingleOrDefault(x => x.Uuid == orderUuid && x.User.Uuid == userUuid);
+
+            if (orderWithDetails == null)
+            {
+                throw new ForbiddenAccessException("Either this order couldn't found or you don't have permission!");
+            }
+
+            return Task.FromResult(new OrderDetailResponse
+            {
+                Address = orderWithDetails.Address,
+                OrderDate = orderWithDetails.OrderDate,
+                OrderUuid = orderWithDetails.Uuid,
+                PurchasedItems = orderWithDetails.OrderDetails.Select(x => new PurchasedItems
+                {
+                    ProductId = x.Product.Uuid,
+                    Quantity = x.Quantity,
+                    UnitPrice = x.Product.UnitPrice
+                }).ToList()
+            });
+
         }
 
-        public Task Order(Guid userUuid, OrderRequest request, CancellationToken cancellationToken)
+        public async Task<IList<ProductQuantityData>> Order(Guid userUuid, OrderRequest request, CancellationToken cancellationToken)
         {
-            var productsInOrder = _databaseRepository.ProductCrudOperations.QueryList(x =>
-                request.ProductQuantities.Select(x => x.ProductUuid).Contains(x.Uuid));
+            var groupedProductQuantities = request.ProductQuantities.GroupBy(x => x.ProductUuid).Select(g =>
+                new ProductQuantityData
+                {
+                    ProductUuid = g.Key,
+                    Quantity = g.Sum(s => s.Quantity)
+                }).ToList();
+            
+            var productsInOrder = BusinessObject.DatabaseRepository.ProductCrudOperations.QueryList(x =>
+                groupedProductQuantities.Select(g => g.ProductUuid).Contains(x.Uuid));
+
+            var filteredInsufficientProducts = groupedProductQuantities
+                .Where(x => x.Quantity <= productsInOrder.First(p => p.Uuid == x.ProductUuid).AmountLeft).ToList();
 
 
-            var createdOrder = _databaseRepository.OrderCrudOperations.Create(new Order
+            var createdOrder = BusinessObject.DatabaseRepository.OrderCrudOperations.Create(new Order
             {
-                User = _authRepository.UserCrudOperations.QuerySingle(x => x.Uuid == userUuid),
+                User = BusinessObject.AuthRepository.UserCrudOperations.QuerySingle(x => x.Uuid == userUuid),
                 OrderDate = DateTime.Now,
-                Address = request.Address
+                Address = request.Address,
+                OrderStatus = EntityLayer.Enum.OrderStatus.Created
             });
 
             createdOrder.OrderDetails = productsInOrder.Select(p =>
             {
-                var quantity = request
-                                .ProductQuantities
+                var quantity = filteredInsufficientProducts
                                 .Where(x => x.ProductUuid == p.Uuid)
                                 .Sum(x => x.Quantity);
 
@@ -71,11 +105,22 @@ namespace ReadingIsGood.BusinessLayer.Services
                 {
                     Product = p,
                     Quantity = quantity,
-                    Price = p.UnitPrice * quantity
+                    PriceSum = p.UnitPrice * quantity
                 };
             }).ToList();
 
-            return Task.CompletedTask;
+
+            filteredInsufficientProducts
+                .ForEach(x => this.BusinessObject
+                                                    .DatabaseRepository
+                                                    .ProductCrudOperations
+                                                    .Update(x.ProductUuid, 
+                                                        product 
+                                                                        => product.AmountLeft -= x.Quantity));
+
+            await BusinessObject.DatabaseRepository.CommitChangesAsync();
+
+            return filteredInsufficientProducts;
         }
     }
 }

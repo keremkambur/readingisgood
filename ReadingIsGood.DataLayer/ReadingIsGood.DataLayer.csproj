@@ -21,4 +21,8 @@
     <ProjectReference Include="..\ReadingIsGood.Utils\ReadingIsGood.Utils.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

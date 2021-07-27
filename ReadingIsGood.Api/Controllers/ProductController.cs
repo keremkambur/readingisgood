@@ -10,9 +10,12 @@ using ReadingIsGood.BusinessLayer.RequestModels.Product;
 using ReadingIsGood.BusinessLayer.ResponseModels.Base;
 using ReadingIsGood.BusinessLayer.ResponseModels.Order;
 using ReadingIsGood.BusinessLayer.ResponseModels.Product;
+using ReadingIsGood.Utils;
 
 namespace ReadingIsGood.Api.Controllers
 {
+    [ApiController]
+    [Route("[controller]")]
     public class ProductController : Controller
     {
         private readonly IProductService _productService;
@@ -24,6 +27,9 @@ namespace ReadingIsGood.Api.Controllers
 
         [HttpGet]
         [Authorize]
+        [Consumes(Constants.MimeType.Json)]
+        [ProducesResponseType(typeof(ListResponse<ProductResponse>), 200)]
+        [ProducesResponseType(typeof(ListResponse<ProductResponse>), 401)]
         public Task<ListResponse<ProductResponse>> GetList()
         {
             var response = new ListResponse<ProductResponse>(HttpContext.TraceIdentifier);
@@ -43,6 +49,9 @@ namespace ReadingIsGood.Api.Controllers
 
         [HttpPost("generate-products")]
         [Authorize]
+        [Consumes(Constants.MimeType.Json)]
+        [ProducesResponseType(typeof(PostResponse), 200)]
+        [ProducesResponseType(typeof(PostResponse), 401)]
         public async Task<PostResponse> GenerateProducts()
         {
             var response = new PostResponse(HttpContext.TraceIdentifier);

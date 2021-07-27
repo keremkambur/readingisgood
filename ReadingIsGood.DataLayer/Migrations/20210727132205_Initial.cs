@@ -21,7 +21,8 @@ namespace ReadingIsGood.DataLayer.Migrations
                     ProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    StockCount = table.Column<int>(type: "int", nullable: false),
+                    AmountLeft = table.Column<int>(type: "int", nullable: false),
+                    UnitPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
@@ -59,7 +60,6 @@ namespace ReadingIsGood.DataLayer.Migrations
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Quantity = table.Column<long>(type: "bigint", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Address = table.Column<string>(type: "varchar(500)", unicode: false, maxLength: 500, nullable: true),
                     OrderStatus = table.Column<string>(type: "varchar(100)", unicode: false, maxLength: 100, nullable: false, defaultValue: "Created"),
@@ -109,26 +109,33 @@ namespace ReadingIsGood.DataLayer.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderProduct",
+                name: "OrderDetail",
                 schema: "Content",
                 columns: table => new
                 {
-                    OrdersOrderId = table.Column<int>(type: "int", nullable: false),
-                    ProductsProductId = table.Column<int>(type: "int", nullable: false)
+                    OrderDetailId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Uuid = table.Column<Guid>(type: "uniqueidentifier", nullable: false, defaultValueSql: "NEWID()"),
+                    OrderId = table.Column<int>(type: "int", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ModifiedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrdersOrderId, x.ProductsProductId });
+                    table.PrimaryKey("PK_OrderDetail", x => x.OrderDetailId);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Order_OrdersOrderId",
-                        column: x => x.OrdersOrderId,
+                        name: "FK_OrderDetail_Order_OrderId",
+                        column: x => x.OrderId,
                         principalSchema: "Content",
                         principalTable: "Order",
                         principalColumn: "OrderId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Product_ProductsProductId",
-                        column: x => x.ProductsProductId,
+                        name: "FK_OrderDetail_Product_ProductId",
+                        column: x => x.ProductId,
                         principalSchema: "Content",
                         principalTable: "Product",
                         principalColumn: "ProductId",
@@ -149,10 +156,23 @@ namespace ReadingIsGood.DataLayer.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderProduct_ProductsProductId",
+                name: "IX_OrderDetail_OrderId",
                 schema: "Content",
-                table: "OrderProduct",
-                column: "ProductsProductId");
+                table: "OrderDetail",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetail_ProductId",
+                schema: "Content",
+                table: "OrderDetail",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrderDetail_Uuid",
+                schema: "Content",
+                table: "OrderDetail",
+                column: "Uuid",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Product_Uuid",
@@ -185,7 +205,7 @@ namespace ReadingIsGood.DataLayer.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderProduct",
+                name: "OrderDetail",
                 schema: "Content");
 
             migrationBuilder.DropTable(

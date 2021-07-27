@@ -25,7 +25,7 @@ namespace ReadingIsGood.EntityLayer.Database.Content
 
         public int Quantity { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal PriceSum { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime? ModifiedAt { get; set; }

@@ -20,7 +20,7 @@ namespace ReadingIsGood.EntityLayer.Database.Content
 
         public User User { get; set; }
 
-        public ICollection<OrderDetail> OrderDetails { get; set; }
+        public ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
         #region IAuditEntity
 
