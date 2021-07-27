@@ -23,7 +23,7 @@ namespace ReadingIsGood.BusinessLayer.Services
         public IList<ProductResponse> GetAvailableProductList()
         {
             return this._databaseRepository.ProductCrudOperations.QueryList(x => x.StockCount > 0)
-                .Select(x => new ProductResponse {Name = x.Name, Stock = x.StockCount}).ToList();
+                .Select(x => new ProductResponse {Name = x.Name, Quantity = x.StockCount}).ToList();
         }
         
         public Task CreateProductOrIncreaseStock()
