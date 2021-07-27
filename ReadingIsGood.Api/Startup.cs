@@ -71,6 +71,7 @@ namespace ReadingIsGood.Api
             
             services.AddScoped<IAuthenticationService, AuthenticationService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IProductService, ProductService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {

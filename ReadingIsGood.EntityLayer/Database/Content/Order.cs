@@ -10,8 +10,6 @@ namespace ReadingIsGood.EntityLayer.Database.Content
     {
         public int OrderId { get; set; }
 
-        public uint Quantity { get; set; }
-
         public DateTime OrderDate { get; set; }
 
         public string Address { get; set; }

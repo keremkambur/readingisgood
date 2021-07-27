@@ -12,7 +12,7 @@ namespace ReadingIsGood.BusinessLayer.ResponseModels.Product
         [JsonPropertyName("name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("stock")]
-        public int Stock { get; set; }
+        [JsonPropertyName("quantity")]
+        public int Quantity { get; set; }
     }
 }

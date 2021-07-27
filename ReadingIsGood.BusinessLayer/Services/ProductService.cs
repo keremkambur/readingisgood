@@ -25,20 +25,31 @@ namespace ReadingIsGood.BusinessLayer.Services
             return this._databaseRepository.ProductCrudOperations.QueryList(x => x.StockCount > 0)
                 .Select(x => new ProductResponse {Name = x.Name, Stock = x.StockCount}).ToList();
         }
-
-        public Task CreateProductOrIncreaseStock(ProductRequest request)
+        
+        public Task CreateProductOrIncreaseStock()
         {
-            var existingProduct = this._databaseRepository.ProductCrudOperations.QueryDbSet().FirstOrDefault(x => string.Equals(x.Name, request.Name, StringComparison.CurrentCultureIgnoreCase));
+            this._databaseRepository.EnableBulkMode();
 
-            if (existingProduct != null)
+            foreach (var i in Enumerable.Range(0, 1000))
             {
-                this._databaseRepository.ProductCrudOperations.Update(existingProduct.Uuid,
-                    product => product.StockCount = product.StockCount + request.Quantity);
+                var rndNum = new Random().Next(1, 1000);
+                var rndName = $"test-{rndNum}";
+
+                var existingProduct = this._databaseRepository.ProductCrudOperations.QueryDbSet().FirstOrDefault(x => string.Equals(x.Name, rndName, StringComparison.CurrentCultureIgnoreCase));
+
+                if (existingProduct != null)
+                {
+                    this._databaseRepository.ProductCrudOperations.Update(existingProduct.Uuid,
+                        product => product.StockCount = product.StockCount + rndNum);
+                }
+                else
+                {
+                    this._databaseRepository.ProductCrudOperations.Create(new ProductRequest{Name = rndName, Quantity = rndNum}.ToProduct());
+                }
+
             }
-            else
-            {
-                this._databaseRepository.ProductCrudOperations.Create(request.ToProduct());
-            }
+
+            this._databaseRepository.DisableBulkMode(true);
 
             return Task.CompletedTask;
         }
