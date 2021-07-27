@@ -7,7 +7,13 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
+
 COPY ["ReadingIsGood.Api/ReadingIsGood.Api.csproj", "ReadingIsGood.Api/"]
+COPY ["ReadingIsGood.Api/ReadingIsGood.BusinessLayer.csproj", "ReadingIsGood.BusinessLayer/"]
+COPY ["ReadingIsGood.Api/ReadingIsGood.DataLayer.csproj", "ReadingIsGood.DataLayer/"]
+COPY ["ReadingIsGood.Api/ReadingIsGood.EntityLayer.csproj", "ReadingIsGood.EntityLayer/"]
+COPY ["ReadingIsGood.Api/ReadingIsGood.Utils.csproj", "ReadingIsGood.Utils/"]
+
 RUN dotnet restore "ReadingIsGood.Api/ReadingIsGood.Api.csproj"
 COPY . .
 WORKDIR "/src/ReadingIsGood.Api"

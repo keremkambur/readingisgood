@@ -10,7 +10,6 @@ using ReadingIsGood.DataLayer.Contracts;
 using ReadingIsGood.DataLayer.Extensions;
 using ReadingIsGood.EntityLayer.Database.Base;
 using ReadingIsGood.EntityLayer.Database.Content;
-using ReadingIsGood.EntityLayer.Database.System;
 
 namespace ReadingIsGood.DataLayer.Repositories
 {
@@ -87,9 +86,9 @@ namespace ReadingIsGood.DataLayer.Repositories
         {
             if (BulkMode) return 0;
 
-            DbContext
-                .Set<ChangeLog>()
-                .AddRange(GetChanges().ToList());
+            //DbContext
+            //    .Set<ChangeLog>()
+            //    .AddRange(GetChanges().ToList());
 
             UpdateIAuditEntities();
 
@@ -100,9 +99,9 @@ namespace ReadingIsGood.DataLayer.Repositories
         {
             if (BulkMode) return Task.FromResult(0);
 
-            DbContext
-                .Set<ChangeLog>()
-                .AddRange(GetChanges().ToList());
+            //DbContext
+            //    .Set<ChangeLog>()
+            //    .AddRange(GetChanges().ToList());
 
             return DbContext.SaveChangesAsync();
         }
@@ -218,41 +217,41 @@ namespace ReadingIsGood.DataLayer.Repositories
             entity.ModifiedAt = DateTime.UtcNow;
         }
 
-        protected virtual IEnumerable<ChangeLog> GetChanges()
-        {
-            foreach (var entry in DbContext.ChangeTracker.Entries())
-            {
-                if (!(entry.Entity is IAuditEntity)) continue;
+        //protected virtual IEnumerable<ChangeLog> GetChanges()
+        //{
+        //    foreach (var entry in DbContext.ChangeTracker.Entries())
+        //    {
+        //        if (!(entry.Entity is IAuditEntity)) continue;
 
-                if (!(entry.Entity is IEntity entity)) continue;
+        //        if (!(entry.Entity is IEntity entity)) continue;
 
-                if (entry.State != EntityState.Modified && entry.State != EntityState.Deleted) continue;
+        //        if (entry.State != EntityState.Modified && entry.State != EntityState.Deleted) continue;
 
-                var batchId = Guid.NewGuid();
-                foreach (var property in entry.Properties)
-                {
-                    // ignore unchanged properties from modified entities
-                    if (entry.State == EntityState.Modified
-                        && string.Concat(property.CurrentValue) == string.Concat(property.OriginalValue))
-                        continue;
+        //        var batchId = Guid.NewGuid();
+        //        foreach (var property in entry.Properties)
+        //        {
+        //            // ignore unchanged properties from modified entities
+        //            if (entry.State == EntityState.Modified
+        //                && string.Concat(property.CurrentValue) == string.Concat(property.OriginalValue))
+        //                continue;
 
-                    yield return new ChangeLog
-                    {
-                        BatchUuid = batchId,
-                        CreatedAt = DateTime.UtcNow,
-                        Application = entry.Metadata.ClrType.Assembly.FullName,
-                        ObjectId = entity.Id,
-                        ObjectUuid = entity.Uuid,
-                        ClassName = entry.Entity.GetType().FullName,
-                        OriginalValue = property.OriginalValue?.ToString() ?? string.Empty,
-                        CurrentValue = property.CurrentValue?.ToString() ?? string.Empty,
-                        PropertyName = property.Metadata.Name,
-                        PropertyType = property.Metadata.ClrType.GetFriendlyName(),
-                        State = entry.State.ToString()
-                    };
-                }
-            }
-        }
+        //            yield return new ChangeLog
+        //            {
+        //                BatchUuid = batchId,
+        //                CreatedAt = DateTime.UtcNow,
+        //                Application = entry.Metadata.ClrType.Assembly.FullName,
+        //                ObjectId = entity.Id,
+        //                ObjectUuid = entity.Uuid,
+        //                ClassName = entry.Entity.GetType().FullName,
+        //                OriginalValue = property.OriginalValue?.ToString() ?? string.Empty,
+        //                CurrentValue = property.CurrentValue?.ToString() ?? string.Empty,
+        //                PropertyName = property.Metadata.Name,
+        //                PropertyType = property.Metadata.ClrType.GetFriendlyName(),
+        //                State = entry.State.ToString()
+        //            };
+        //        }
+        //    }
+        //}
 
         private void UpdateIAuditEntities()
         {

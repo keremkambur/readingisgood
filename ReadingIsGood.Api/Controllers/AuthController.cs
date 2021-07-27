@@ -68,5 +68,29 @@ namespace ReadingIsGood.Api.Controllers
 
             return response;
         }
+
+        [HttpPost("customer-refresh")]
+        [Consumes(Constants.MimeType.Json)]
+        [ProducesResponseType(typeof(SingleResponse<RefreshLoginResponse>), 200)]
+        public async Task<ISingleResponse<RefreshLoginResponse>> CustomerRefresh([FromBody] RefreshLoginRequest request, CancellationToken cancellationToken)
+        {
+            var response = new SingleResponse<RefreshLoginResponse>(this.HttpContext.TraceIdentifier);
+
+            try
+            {
+                request.ValidateAndThrow();
+
+                response.Model = await _authenticationService.RefreshLogin(request, cancellationToken)
+                        .ConfigureAwait(false)
+                    ;
+            }
+            catch (Exception ex)
+            {
+                response.SetError(ex);
+                response.Model = null;
+            }
+
+            return response;
+        }
     }
 }

@@ -80,7 +80,7 @@ namespace ReadingIsGood.BusinessLayer.Services
             return new AuthenticationResponse
             {
                 ClientId = user.ClientId,
-                Token = BuildJwtToken(user, UserType.Customer, JwtValidForKind.Customer.ToAudience())
+                Token = BuildJwtToken(user, UserType.Customer, JwtValidForKind.Customer.ToAudience(), newRefreshToken)
             };
         }
 
