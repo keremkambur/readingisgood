@@ -27,7 +27,10 @@ namespace ReadingIsGood.Api.Controllers
             _authenticationService = authenticationService;
         }
 
-        [HttpPost("new-customer")]
+        [HttpPost("register")]
+        [Consumes(Constants.MimeType.Json)]
+        [ProducesResponseType(typeof(PostResponse), 200)]
+        [ProducesResponseType(typeof(PostResponse), 401)]
         public async Task<PostResponse> NewCustomer([FromBody] RegistrationRequest request, CancellationToken cancellationToken)
         {
             var response = new PostResponse(this.HttpContext.TraceIdentifier);
@@ -45,9 +48,10 @@ namespace ReadingIsGood.Api.Controllers
             return response;
         }
 
-        [HttpPost("customer-login")]
+        [HttpPost("login")]
         [Consumes(Constants.MimeType.Json)]
         [ProducesResponseType(typeof(SingleResponse<AuthenticationResponse>), 200)]
+        [ProducesResponseType(typeof(SingleResponse<RefreshLoginResponse>), 401)]
         public async Task<ISingleResponse<AuthenticationResponse>> CustomerLogin([FromBody] AuthenticationRequest request, CancellationToken cancellationToken)
         {
             var response = new SingleResponse<AuthenticationResponse>(this.HttpContext.TraceIdentifier);
@@ -69,9 +73,10 @@ namespace ReadingIsGood.Api.Controllers
             return response;
         }
 
-        [HttpPost("customer-refresh")]
+        [HttpPost("refresh")]
         [Consumes(Constants.MimeType.Json)]
         [ProducesResponseType(typeof(SingleResponse<RefreshLoginResponse>), 200)]
+        [ProducesResponseType(typeof(SingleResponse<RefreshLoginResponse>), 401)]
         public async Task<ISingleResponse<RefreshLoginResponse>> CustomerRefresh([FromBody] RefreshLoginRequest request, CancellationToken cancellationToken)
         {
             var response = new SingleResponse<RefreshLoginResponse>(this.HttpContext.TraceIdentifier);

@@ -54,7 +54,7 @@ namespace ReadingIsGood.BusinessLayer.Services
         /// <param name="ipAddress"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<AuthenticationResponse> AuthenticateCustomer(AuthenticationRequest request,
+        public Task<AuthenticationResponse> AuthenticateCustomer(AuthenticationRequest request,
             CancellationToken cancellationToken)
         {
             var user = BusinessObject.AuthRepository.QueryUserFromLogin(request.Email, request.Password,
@@ -77,11 +77,11 @@ namespace ReadingIsGood.BusinessLayer.Services
                 throw new ForbiddenAccessException("Failed to authenticate user.");
             }
 
-            return new AuthenticationResponse
+            return Task.FromResult(new AuthenticationResponse
             {
                 ClientId = user.ClientId,
                 Token = BuildJwtToken(user, UserType.Customer, JwtValidForKind.Customer.ToAudience(), newRefreshToken)
-            };
+            });
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace ReadingIsGood.BusinessLayer.Services
         /// <param name="ipAddress"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public async Task<RefreshLoginResponse> RefreshLogin(RefreshLoginRequest request, CancellationToken cancellationToken)
+        public Task<RefreshLoginResponse> RefreshLogin(RefreshLoginRequest request, CancellationToken cancellationToken)
         {
             var newRefreshToken = _jwtOptions.GenerateRefreshToken();
 
@@ -106,15 +106,15 @@ namespace ReadingIsGood.BusinessLayer.Services
                 throw new ForbiddenAccessException("Failed to authenticate user.");
             }
 
-            return new RefreshLoginResponse
+            return Task.FromResult(new RefreshLoginResponse
             {
                 Token = BuildJwtToken(user, UserType.Customer, JwtValidForKind.Customer.ToAudience(), newRefreshToken)
-            };
+            });
         }
 
-        public async Task<User> GetById(Guid uuid)
+        public Task<User> GetById(Guid uuid)
         {
-            return this.BusinessObject.AuthRepository.UserCrudOperations.QuerySingle(x => x.Uuid == uuid);
+            return Task.FromResult(this.BusinessObject.AuthRepository.UserCrudOperations.QuerySingle(x => x.Uuid == uuid));
         }
 
         private JwtResponse BuildJwtToken(QueryUserFromLoginResponse user, UserType userType, List<string> audiences,
@@ -125,8 +125,6 @@ namespace ReadingIsGood.BusinessLayer.Services
                 throw new ForbiddenAccessException("User does not exist.");
             }
 
-            string jwtValidForKind;
-
             var claimsHelper = new ClaimsIdentityHelper(_jwtGenerator.Options.Issuer);
 
             var claims = new List<Claim>
@@ -134,7 +132,7 @@ namespace ReadingIsGood.BusinessLayer.Services
                 claimsHelper.CreateClaim(JwtRegisteredClaimNames.Jti,
                     Guid.NewGuid().ToString()), // unique identifier for the jwt
                 claimsHelper.CreateClaim(ClaimsIdentityHelper.ClaimsTypes.ClientId,
-                    user?.ClientId.ToString()), // unique identifier for client (login device)
+                    user?.Uuid.ToString()), // unique identifier for client (login device)
                 claimsHelper.CreateClaim(JwtRegisteredClaimNames.Sub,
                     user?.Uuid.ToString()), // unique identifier for the principal (user)
                 claimsHelper.CreateClaim(JwtRegisteredClaimNames.Iat,

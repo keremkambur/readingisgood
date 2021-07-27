@@ -1,19 +1,12 @@
 using System;
 using System.Security.Cryptography;
-using System.Text;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using ReadingIsGood.Api.Controllers;
-using ReadingIsGood.Api.Extensions;
 using ReadingIsGood.Api.Middleware;
-using ReadingIsGood.Api.Middleware.ApiExceptionHandler;
-using ReadingIsGood.Api.Middleware.JwtCheckToRefreshATokenMiddleware;
 using ReadingIsGood.BusinessLayer;
 using ReadingIsGood.BusinessLayer.Contracts;
 using ReadingIsGood.BusinessLayer.Options;
@@ -75,7 +68,10 @@ namespace ReadingIsGood.Api
             services.AddTransient<SqlDbContext>();
             services.AddScoped<IEntityMapper, EntityMapper>();
             services.AddTransient<IBusinessObject, BusinessObject>();
+            
             services.AddScoped<IAuthenticationService, AuthenticationService>();
+            services.AddScoped<IOrderService, OrderService>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
             {
                 options.TokenValidationParameters = new TokenValidationParameters

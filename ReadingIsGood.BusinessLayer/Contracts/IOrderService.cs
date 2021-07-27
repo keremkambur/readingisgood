@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using ReadingIsGood.BusinessLayer.RequestModels.Order;
 using ReadingIsGood.BusinessLayer.ResponseModels.Base;
 using ReadingIsGood.BusinessLayer.ResponseModels.Order;
 
@@ -10,10 +12,10 @@ namespace ReadingIsGood.BusinessLayer.Contracts
 {
     public interface IOrderService
     {
-        Task<ListResponse<OrderDetailResponse>> GetOrderList(string userUuid);
+        Task<IList<OrderListItemResponse>> GetOrderList(string userUuid, CancellationToken cancellationToken);
 
-        Task<SingleResponse<OrderDetailResponse>> GetOrderDetail(string userUuid, string orderUuid);
+        Task<OrderDetailResponse> GetOrderDetail(string userUuid, string orderUuid, CancellationToken cancellationToken);
 
-        Task<PostResponse> Order(string userUuid, string productUuid);
+        Task<PostResponse> Order(OrderRequest request, CancellationToken cancellationToken);
     }
 }

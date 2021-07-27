@@ -8,7 +8,7 @@ using ReadingIsGood.BusinessLayer.ResponseModels.Auth;
 using ReadingIsGood.BusinessLayer.ResponseModels.Base;
 using ReadingIsGood.EntityLayer.Enum;
 
-namespace ReadingIsGood.Api.Middleware.ApiExceptionHandler
+namespace ReadingIsGood.Api.Middleware
 {
     public class ApiExceptionHandlerMiddleware
     {
