@@ -2,25 +2,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using ReadingIsGood.DataLayer.Extensions;
-using ReadingIsGood.EntityLayer.Database;
 using ReadingIsGood.EntityLayer.Database.Base;
 
 namespace ReadingIsGood.DataLayer.Mappings.Base
 {
     public abstract class EntityMap<TEntity> : IEntityMap where TEntity : class, IEntity
     {
-        protected readonly string Schema;
         protected readonly List<IEntityMapComponent> EntityMapComponents;
+        protected readonly string Schema;
 
         protected EntityMap(string schema)
         {
-            this.Schema = schema;
-            this.EntityMapComponents = new List<IEntityMapComponent>();
+            Schema = schema;
+            EntityMapComponents = new List<IEntityMapComponent>();
 
-            if (typeof(TEntity).HasInterface<IEntity>())
-            {
-                this.EntityMapComponents.Add(new EntityMapComponent());
-            }
+            if (typeof(TEntity).HasInterface<IEntity>()) EntityMapComponents.Add(new EntityMapComponent());
         }
 
         public abstract void Map(ModelBuilder modelBuilder);
@@ -29,7 +25,7 @@ namespace ReadingIsGood.DataLayer.Mappings.Base
         {
             entity.ToTable(
                 typeof(TEntity).Name,
-                string.IsNullOrEmpty(this.Schema) ? typeof(TEntity).LastNamespacePart() : this.Schema);
+                string.IsNullOrEmpty(Schema) ? typeof(TEntity).LastNamespacePart() : Schema);
         }
     }
 }

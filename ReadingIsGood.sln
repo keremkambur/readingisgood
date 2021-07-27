@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingIsGood.Api", "ReadingIsGood.Api\ReadingIsGood.Api.csproj", "{EF31DCDE-9C4E-4580-9344-E52ACBD24CE8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingIsGood.Api", "ReadingIsGood.Api\ReadingIsGood.Api.csproj", "{EF31DCDE-9C4E-4580-9344-E52ACBD24CE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingIsGood.EntityLayer", "ReadingIsGood.EntityLayer\ReadingIsGood.EntityLayer.csproj", "{071B5441-DB31-4A9A-9A5F-931D32C65A24}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingIsGood.EntityLayer", "ReadingIsGood.EntityLayer\ReadingIsGood.EntityLayer.csproj", "{071B5441-DB31-4A9A-9A5F-931D32C65A24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingIsGood.BusinessLayer", "ReadingIsGood.BusinessLayer\ReadingIsGood.BusinessLayer.csproj", "{38F9D5CA-A827-43E7-8AFA-72D3D649F0F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingIsGood.BusinessLayer", "ReadingIsGood.BusinessLayer\ReadingIsGood.BusinessLayer.csproj", "{38F9D5CA-A827-43E7-8AFA-72D3D649F0F0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingIsGood.DataLayer", "ReadingIsGood.DataLayer\ReadingIsGood.DataLayer.csproj", "{0FC6A891-B2F8-4D53-A714-C0FC4B43729D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingIsGood.DataLayer", "ReadingIsGood.DataLayer\ReadingIsGood.DataLayer.csproj", "{0FC6A891-B2F8-4D53-A714-C0FC4B43729D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReadingIsGood.Utils", "ReadingIsGood.Utils\ReadingIsGood.Utils.csproj", "{D9ED2600-CCF7-41FB-AC9D-76BB09423B7F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReadingIsGood.Utils", "ReadingIsGood.Utils\ReadingIsGood.Utils.csproj", "{D9ED2600-CCF7-41FB-AC9D-76BB09423B7F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

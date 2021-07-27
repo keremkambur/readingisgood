@@ -7,17 +7,20 @@ namespace ReadingIsGood.DataLayer.Mappings.Base
     {
         public EntityMapper()
         {
-            this.Mappings = new List<IEntityMap>
+            Mappings = new List<IEntityMap>
             {
-                new OrderMap() as IEntityMap,
-                new UserMap() as IEntityMap,
-                new ProductMap() as IEntityMap,
+                new UserMap(),
+                new OrderMap(),
+                new ProductMap(),
+                new RefreshTokenMap()
             };
         }
 
         public List<IEntityMap> Mappings { get; }
 
-        public void MapEntities(ModelBuilder modelBuilder) 
-            => this.Mappings.ForEach(item => item.Map(modelBuilder));
+        public void MapEntities(ModelBuilder modelBuilder)
+        {
+            Mappings.ForEach(item => item.Map(modelBuilder));
+        }
     }
 }

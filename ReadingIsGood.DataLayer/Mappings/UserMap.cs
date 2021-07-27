@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ReadingIsGood.DataLayer.Mappings.Base;
-using ReadingIsGood.EntityLayer.Database;
+using ReadingIsGood.EntityLayer.Database.Auth;
 using ReadingIsGood.EntityLayer.Enum;
 using ReadingIsGood.Utils.Extensions;
 
@@ -19,10 +18,10 @@ namespace ReadingIsGood.DataLayer.Mappings
             var entity = modelBuilder.Entity<User>();
 
             // set table name and schema
-            this.MapTableAndSchema(entity);
+            MapTableAndSchema(entity);
 
             // apply component mappings
-            this.EntityMapComponents.ForEach(c => c.Map(entity));
+            EntityMapComponents.ForEach(c => c.Map(entity));
 
             // identifier
             entity.HasKey(p => p.UserId);

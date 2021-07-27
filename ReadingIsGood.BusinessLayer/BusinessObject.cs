@@ -9,33 +9,35 @@ namespace ReadingIsGood.BusinessLayer
 {
     public class BusinessObject : IBusinessObject
     {
+        public BusinessObject(SqlDbContext dbContext, ILoggerFactory loggerFactory)
+        {
+            Id = Guid.NewGuid();
+            DatabaseRepository = new DatabaseRepository(loggerFactory.CreateLogger<DatabaseRepository>(), dbContext);
+            AuthRepository = new AuthRepository(loggerFactory.CreateLogger<AuthRepository>(), dbContext);
+        }
+
         public IDatabaseRepository DatabaseRepository { get; }
+        public IAuthRepository AuthRepository { get; }
 
 
         /// <inheritdoc />
         public Guid Id { get; }
 
-        public bool BulkModeIsEnabled => this.DatabaseRepository.BulkMode;
+        public bool BulkModeIsEnabled => DatabaseRepository.BulkMode;
 
         public void EnableBulkMode()
         {
-            this.DatabaseRepository.EnableBulkMode();
+            DatabaseRepository.EnableBulkMode();
         }
 
         public void DisableBulkMode(bool saveChanges = false)
         {
-            this.DatabaseRepository.DisableBulkMode();
-        }
-
-        public BusinessObject(SqlDbContext dbContext, ILoggerFactory loggerFactory)
-        {
-            this.Id = Guid.NewGuid();
-            this.DatabaseRepository = new DatabaseRepository(loggerFactory.CreateLogger<DatabaseRepository>(),  dbContext);
+            DatabaseRepository.DisableBulkMode();
         }
 
         public void Dispose()
         {
-            this.DatabaseRepository?.Dispose();
+            DatabaseRepository?.Dispose();
         }
     }
 }

@@ -3,7 +3,7 @@
     public class SqlOptions
     {
         /// <summary>
-        /// for local development only!
+        ///     for local development only!
         /// </summary>
         public string ConnectionString { get; set; }
 

@@ -1,7 +1,6 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using ReadingIsGood.DataLayer.Mappings.Base;
-using ReadingIsGood.EntityLayer.Database;
+using ReadingIsGood.EntityLayer.Database.Content;
 
 namespace ReadingIsGood.DataLayer.Mappings
 {
@@ -17,14 +16,16 @@ namespace ReadingIsGood.DataLayer.Mappings
             var entity = modelBuilder.Entity<Product>();
 
             // set table name and schema
-            this.MapTableAndSchema(entity);
+            MapTableAndSchema(entity);
 
             // apply component mappings
-            this.EntityMapComponents.ForEach(c => c.Map(entity));
+            EntityMapComponents.ForEach(c => c.Map(entity));
 
             // identifier
-            //entity.HasKey(p => p.OrderId);
-            //entity.Property(p => p.OrderId).UseIdentityColumn();
+            entity.HasKey(p => p.ProductId);
+            entity.Property(p => p.ProductId).UseIdentityColumn();
+            
+            entity.HasMany(r => r.Orders).WithMany(x => x.Products);
         }
     }
 }

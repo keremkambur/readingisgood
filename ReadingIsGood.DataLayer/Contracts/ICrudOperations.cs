@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using ReadingIsGood.EntityLayer.Database;
 using ReadingIsGood.EntityLayer.Database.Base;
 
 namespace ReadingIsGood.DataLayer.Contracts
@@ -24,7 +23,9 @@ namespace ReadingIsGood.DataLayer.Contracts
         List<TModel> ReadByCreateDateTime(DateTime date);
 
 
-        List<TModel> QueryList(Func<TModel, bool> predicate, int? skip = null, int? take = null, params Expression<Func<TModel, object>>[] includes);
+        List<TModel> QueryList(Func<TModel, bool> predicate, int? skip = null, int? take = null,
+            params Expression<Func<TModel, object>>[] includes);
+
         TModel QuerySingle(Func<TModel, bool> predicate, params Expression<Func<TModel, object>>[] includes);
         DbSet<TModel> QueryDbSet();
     }

@@ -11,6 +11,8 @@ namespace ReadingIsGood.BusinessLayer.Contracts
 
         IDatabaseRepository DatabaseRepository { get; }
 
+        IAuthRepository AuthRepository { get; }
+
         void EnableBulkMode();
         void DisableBulkMode(bool saveChanges = false);
     }

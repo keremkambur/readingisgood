@@ -5,6 +5,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Middleware\**" />
+    <EmbeddedResource Remove="Middleware\**" />
+    <None Remove="Middleware\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\ReadingIsGood.DataLayer\ReadingIsGood.DataLayer.csproj" />
   </ItemGroup>
 
