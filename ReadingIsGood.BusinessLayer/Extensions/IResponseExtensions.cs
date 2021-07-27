@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using Microsoft.IdentityModel.Logging;
 using ReadingIsGood.BusinessLayer.Exceptions;
 using ReadingIsGood.BusinessLayer.ResponseModels.Base;
 using ReadingIsGood.EntityLayer.Enum;

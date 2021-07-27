@@ -115,12 +115,7 @@ namespace ReadingIsGood.Api
 
             app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
 
-            //app.UseMiddleware<ApiExceptionHandlerMiddleware>();
-        }
-
-        private static void RegisterCustomAuthMiddleware(IApplicationBuilder app)
-        {
-            app.RegisterJwtCheckMiddleware<JwtCheckToRefreshATokenAttribute, JwtCheckToRefreshATokenMiddleware>(typeof(AuthController));
+            app.UseMiddleware<ApiExceptionHandlerMiddleware>();
         }
     }
 }
